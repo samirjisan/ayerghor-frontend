@@ -1,0 +1,39 @@
+/* ==========================================================
+   AyerGhor theme — taken from the logo
+   Logo pink (roof + "Ghor")  -> --color-primary
+   Logo charcoal ("Ayer")     -> --color-ink
+   ========================================================== */
+:root {
+  /* brand */
+  --color-primary: #b91c5e;
+  --color-primary-hover: #9d174f;
+  --color-primary-active: #831343;
+  --color-primary-soft: #fce7f1;      /* light tint for badges / hover backgrounds */
+  --color-primary-faint: #fff5f9;     /* page sections */
+  --color-ink: #1f1f23;               /* main text, dark buttons */
+  --color-ink-soft: #3b3b42;
+
+  /* neutrals */
+  --color-bg: #f6f7f9;                /* matches the light grey of the logo background */
+  --color-surface: #ffffff;
+  --color-border: #e4e6eb;
+  --color-muted: #6b7280;
+
+  /* status */
+  --color-success: #15803d;
+  --color-danger: #d92d20;            /* also used for the red "mandatory" star */
+  --color-warning: #b45309;
+
+  /* shape & depth */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --shadow-sm: 0 1px 2px rgba(31, 31, 35, 0.06);
+  --shadow-md: 0 8px 24px rgba(31, 31, 35, 0.08);
+  --shadow-brand: 0 10px 24px rgba(185, 28, 94, 0.25);
+
+  /* type */
+  --font-bn: 'Hind Siliguri', sans-serif;
+  --font-en: 'Poppins', sans-serif;
+  --font-base: 'Poppins', 'Hind Siliguri', system-ui, sans-serif;
+}
