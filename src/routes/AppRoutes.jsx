@@ -12,6 +12,8 @@ import CustomerAccountPage from '../features/customer/pages/CustomerAccountPage'
 import CartPage from '../features/cart/pages/CartPage';
 import AdminProductsPage from '../features/admin/pages/AdminProductsPage';
 import AdminCommercePage from '../features/admin/pages/AdminCommercePage';
+import AdminCategoriesPage from '../features/admin/pages/AdminCategoriesPage';
+import AdminUsersPage from '../features/admin/pages/AdminUsersPage';
 
 export default function AppRoutes() {
   return (
@@ -35,6 +37,8 @@ export default function AppRoutes() {
         {/* super admin only */}
         <Route element={<ProtectedRoute roles={['super_admin']} />}>
           <Route path="/admin" element={<AdminDashboardPage />} />
+          <Route path="/admin/users" element={<AdminUsersPage />} />
+          <Route path="/admin/categories" element={<AdminCategoriesPage />} />
           <Route path="/admin/products" element={<AdminProductsPage />} />
           <Route path="/admin/coupons" element={<AdminCommercePage />} />
         </Route>

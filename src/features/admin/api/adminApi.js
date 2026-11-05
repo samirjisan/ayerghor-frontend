@@ -1,5 +1,21 @@
 import client from '../../../api/axiosClient';
 
+export const fetchAdminUsers = (params = {}) =>
+  client.get('/admin/users', { params }).then((r) => r.data);
+export const updateAdminUser = (id, payload) =>
+  client.put(`/admin/users/${id}`, payload).then((r) => r.data);
+export const updateAdminUserStatus = (id, is_active) =>
+  client.patch(`/admin/users/${id}/status`, { is_active }).then((r) => r.data);
+
+export const fetchAdminCategories = () => client.get('/admin/categories').then((r) => r.data);
+export const createAdminCategory = (formData) =>
+  client.post('/admin/categories', formData).then((r) => r.data);
+export const updateAdminCategory = (id, formData) => {
+  formData.append('_method', 'PUT');
+  return client.post(`/admin/categories/${id}`, formData).then((r) => r.data);
+};
+export const deleteAdminCategory = (id) => client.delete(`/admin/categories/${id}`).then((r) => r.data);
+
 export const fetchAdminProducts = (params = {}) =>
   client.get('/admin/products', { params }).then((r) => r.data.data);
 export const createAdminProduct = (formData) =>

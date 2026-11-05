@@ -11,6 +11,8 @@ export default function AccountSidebar() {
   const links = isAdmin
     ? [
       { to: '/admin', label: t('adminDashboard'), icon: '▦', end: true },
+      { to: '/admin/users', label: t('manageUsers'), icon: '♙' },
+      { to: '/admin/categories', label: t('manageCategories'), icon: '◇' },
       { to: '/admin/products', label: t('manageProducts'), icon: '□' },
       { to: '/admin/coupons', label: t('couponsAndDelivery'), icon: '%' },
       { to: '/admin#orders', label: t('orders'), icon: '▤' },
