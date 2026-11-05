@@ -1,0 +1,67 @@
+name: Frontend build and cPanel deployment
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: frontend-production-deployment
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      VITE_API_URL: https://api.ayerghor.com/api
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build production frontend
+        run: npm run build
+
+      - name: Upload built frontend
+        if: github.ref == 'refs/heads/main' && vars.CPANEL_DEPLOY_ENABLED == 'true'
+        env:
+          CPANEL_HOST: alpha.hostseba.com
+          CPANEL_PORT: '22'
+          CPANEL_USER: ayerghor
+          FRONTEND_DEPLOY_PATH: /home/ayerghor/public_html
+          CPANEL_SSH_PRIVATE_KEY: ${{ secrets.CPANEL_SSH_PRIVATE_KEY }}
+          CPANEL_KNOWN_HOSTS: ${{ secrets.CPANEL_KNOWN_HOSTS }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in CPANEL_SSH_PRIVATE_KEY CPANEL_KNOWN_HOSTS; do
+            if [[ -z "${!name}" ]]; then
+              echo "::error::The $name Actions secret is required for cPanel deployment."
+              exit 1
+            fi
+          done
+
+          mkdir -p "$HOME/.ssh"
+          chmod 700 "$HOME/.ssh"
+          printf '%s\n' "$CPANEL_SSH_PRIVATE_KEY" > "$HOME/.ssh/cpanel_deploy"
+          printf '%s\n' "$CPANEL_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/cpanel_deploy" "$HOME/.ssh/known_hosts"
+          ssh-keygen -y -f "$HOME/.ssh/cpanel_deploy" > /dev/null
+
+          ssh_options=(-p "$CPANEL_PORT" -i "$HOME/.ssh/cpanel_deploy" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
+          ssh "${ssh_options[@]}" "$CPANEL_USER@$CPANEL_HOST" "mkdir -p '$FRONTEND_DEPLOY_PATH'"
+          rsync -az \
+            -e "ssh -p $CPANEL_PORT -i $HOME/.ssh/cpanel_deploy -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts" \
+            dist/ "$CPANEL_USER@$CPANEL_HOST:$FRONTEND_DEPLOY_PATH/"
